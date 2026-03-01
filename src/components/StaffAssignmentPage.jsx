@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AssignmentsDisplay from './AssignmentsDisplay';
 
 const TEAM_MEMBERS = ['Andy', 'Brahim', 'Emin', 'Gyulten', 'Peter'];
 const SHIFT_ROLES = [
@@ -23,12 +24,21 @@ export default function StaffAssignmentPage() {
     end: ''
   });
 
+  const [savedAssignments, setSavedAssignments] = useState(null);
+
   const handlePacoAChange = (field, value) => {
     setPacoA(prev => ({ ...prev, [field]: value }));
   };
 
   const handlePacoBChange = (field, value) => {
     setPacoB(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    setSavedAssignments({
+      pacoA: { ...pacoA },
+      pacoB: { ...pacoB }
+    });
   };
 
   const renderSection = (title, state, onChange) => (
@@ -82,17 +92,20 @@ export default function StaffAssignmentPage() {
         {renderSection("PACO B Kant", pacoB, handlePacoBChange)}
 
         <div className="mt-8 flex justify-center">
-          <button 
+          <button
             className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-semibold shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200"
-            onClick={() => {
-              console.log("PACO A Assignments:", pacoA);
-              console.log("PACO B Assignments:", pacoB);
-              alert("Assignments saved! (Check console for output)");
-            }}
+            onClick={handleSave}
           >
             Save Assignments
           </button>
         </div>
+
+        {savedAssignments && (
+          <AssignmentsDisplay
+            pacoA={savedAssignments.pacoA}
+            pacoB={savedAssignments.pacoB}
+          />
+        )}
       </div>
     </div>
   );
