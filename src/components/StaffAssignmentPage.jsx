@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AssignmentsDisplay from './AssignmentsDisplay';
 
 const TEAM_MEMBERS = ['Andy', 'Brahim', 'Emin', 'Gyulten', 'Peter'];
@@ -9,7 +9,7 @@ const SHIFT_ROLES = [
   { id: 'end', label: 'End' }
 ];
 
-export default function StaffAssignmentPage() {
+export default function StaffAssignmentPage({ savedAssignments, onSaveAssignments }) {
   const [pacoA, setPacoA] = useState({
     start: '',
     lunchEarly: '',
@@ -24,7 +24,13 @@ export default function StaffAssignmentPage() {
     end: ''
   });
 
-  const [savedAssignments, setSavedAssignments] = useState(null);
+  // Sync state if assignments were already saved (e.g., navigating back to Leader view)
+  useEffect(() => {
+    if (savedAssignments) {
+      if (savedAssignments.pacoA) setPacoA(savedAssignments.pacoA);
+      if (savedAssignments.pacoB) setPacoB(savedAssignments.pacoB);
+    }
+  }, [savedAssignments]);
 
   const handlePacoAChange = (field, value) => {
     setPacoA(prev => ({ ...prev, [field]: value }));
@@ -35,7 +41,7 @@ export default function StaffAssignmentPage() {
   };
 
   const handleSave = () => {
-    setSavedAssignments({
+    onSaveAssignments({
       pacoA: { ...pacoA },
       pacoB: { ...pacoB }
     });
@@ -77,7 +83,7 @@ export default function StaffAssignmentPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
